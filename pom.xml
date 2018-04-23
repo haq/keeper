@@ -36,5 +36,13 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>bintray-ihaq-maven</id>
+            <name>ihaq-maven</name>
+            <url>https://api.bintray.com/maven/ihaq/maven/config-manager/;publish=1</url>
+        </repository>
+    </distributionManagement>
+
 
 </project>
