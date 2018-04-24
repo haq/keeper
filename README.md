@@ -47,9 +47,9 @@ public class TestPlugin extends JavaPlugin {
 ## Download
 [ ![Download](https://api.bintray.com/packages/ihaq/maven/config-manager/images/download.svg) ](https://bintray.com/ihaq/maven/config-manager/_latestVersion)
 
-#### Maven
-
 Replace VERSION with the verion above.
+
+#### Maven
 ```xml
 <repository>
     <id>jcenter</id>
