@@ -1,10 +1,11 @@
 package me.ihaq.configmanager;
 
+import me.ihaq.configmanager.data.ConfigValue;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
 public class ConfigManager {
@@ -17,25 +18,11 @@ public class ConfigManager {
      */
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
-        objects = new LinkedHashSet<>();
+        objects = new HashSet<>();
 
         // copying their default config if they have one
         plugin.getConfig().options().copyDefaults(true);
         plugin.saveConfig();
-    }
-
-    /**
-     * @param object the object to be registered
-     */
-    private void register(Object object) {
-        objects.add(object);
-    }
-
-    /**
-     * @param object the object to be unregistered
-     */
-    private void unregister(Object object) {
-        objects.remove(object);
     }
 
     /**
@@ -45,7 +32,7 @@ public class ConfigManager {
      * @return instance of this class so you can build
      */
     public ConfigManager register(Object... objects) {
-        Arrays.stream(objects).forEach(this::register);
+        this.objects.addAll(Arrays.asList(objects));
         return this;
     }
 
@@ -56,7 +43,7 @@ public class ConfigManager {
      * @return instance of this class so you can build
      */
     public ConfigManager unregister(Object... objects) {
-        Arrays.stream(objects).forEach(this::unregister);
+        this.objects.removeAll(Arrays.asList(objects));
         return this;
     }
 
@@ -76,19 +63,12 @@ public class ConfigManager {
             if (value instanceof String)
                 value = ChatColor.translateAlternateColorCodes('&', (String) value);
 
-            boolean accessible = field.isAccessible();
             try {
-                if (!accessible)
-                    field.setAccessible(true);
-
+                field.setAccessible(true);
                 field.set(object, value);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
-            } finally {
-                if (!accessible)
-                    field.setAccessible(false);
             }
-
 
         }));
         return this;
@@ -103,17 +83,11 @@ public class ConfigManager {
             if (!field.isAnnotationPresent(ConfigValue.class))
                 return;
 
-            boolean accessible = field.isAccessible();
             try {
-                if (!accessible)
-                    field.setAccessible(true);
-
+                field.setAccessible(true);
                 plugin.getConfig().set(field.getAnnotation(ConfigValue.class).value(), field.get(object));
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
-            } finally {
-                if (!accessible)
-                    field.setAccessible(false);
             }
 
         }));
