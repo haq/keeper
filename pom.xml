@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.ihaq.configmanager</groupId>
-    <artifactId>ConfigManager</artifactId>
+    <groupId>me.ihaq</groupId>
+    <artifactId>config-manager</artifactId>
     <version>1.1</version>
     <build>
         <plugins>
@@ -35,14 +35,5 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <repository>
-            <id>bintray-ihaq-maven</id>
-            <name>ihaq-maven</name>
-            <url>https://api.bintray.com/maven/ihaq/maven/config-manager/;publish=1</url>
-        </repository>
-    </distributionManagement>
-
 
 </project>
