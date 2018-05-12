@@ -67,6 +67,7 @@ repositories {
         url "http://maven.ihaq.me"
     }
 }
+
 dependencies {
     compile 'me.ihaq:config-manager:1.1'
 }
