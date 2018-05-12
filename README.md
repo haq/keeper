@@ -1,4 +1,3 @@
-[ ![Download](https://api.bintray.com/packages/ihaq/maven/config-manager/images/download.svg) ](https://bintray.com/ihaq/maven/config-manager/_latestVersion)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg) ](LICENSE)
 
 # ConfigManager
@@ -45,32 +44,30 @@ public class TestPlugin extends JavaPlugin {
 ```
 
 ## Download
-[ ![Download](https://api.bintray.com/packages/ihaq/maven/config-manager/images/download.svg) ](https://bintray.com/ihaq/maven/config-manager/_latestVersion)
-
-Replace VERSION with the verion above.
 
 #### Maven
 ```xml
 <repository>
-    <id>jcenter</id>
-    <name>jcenter-bintray</name>
-    <url>http://jcenter.bintray.com</url>
+    <id>ihaq-me</id>
+    <name>ihaq-maven</name>
+    <url>http://maven.ihaq.me</url>
 </repository>
 
 <dependency>
-    <groupId>me.ihaq.configmanager</groupId>
-    <artifactId>ConfigManager</artifactId>
-    <version>VERSION</version>
+    <groupId>me.ihaq</groupId>
+    <artifactId>config-manager</artifactId>
+    <version>1.1</version>
 </dependency>
 ```
 
 #### Gradle
 ```gradle
-dependencies {
-    compile 'me.ihaq.configmanager:ConfigManager:VERSION'
-}
-
 repositories {
-    jcenter()
+    maven {
+        url "http://maven.ihaq.me"
+    }
+}
+dependencies {
+    compile 'me.ihaq:config-manager:1.1'
 }
 ```

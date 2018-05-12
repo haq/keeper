@@ -8,6 +8,13 @@
     <artifactId>config-manager</artifactId>
     <version>1.1</version>
     <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>3.0.0</version>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -19,6 +26,13 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>ihaq-maven</id>
+            <url>ftp://ftp.ihaq.me/maven.ihaq.me/</url>
+        </repository>
+    </distributionManagement>
 
     <repositories>
         <repository>
