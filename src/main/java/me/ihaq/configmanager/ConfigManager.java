@@ -21,8 +21,7 @@ public class ConfigManager {
         objects = new HashSet<>();
 
         // copying their default config if they have one
-        plugin.getConfig().options().copyDefaults(true);
-        plugin.saveConfig();
+        plugin.saveDefaultConfig();
     }
 
     /**
