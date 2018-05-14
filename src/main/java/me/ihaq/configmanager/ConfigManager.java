@@ -93,5 +93,14 @@ public class ConfigManager {
         return this;
     }
 
+    /**
+     * @return instance of this class so you can build
+     */
+    public ConfigManager reload() {
+        plugin.reloadConfig();
+        load();
+        return this;
+    }
+
 
 }
