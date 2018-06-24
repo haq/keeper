@@ -52,15 +52,19 @@ public class ConfigManager {
     public ConfigManager load() {
         objects.forEach(object -> Arrays.stream(object.getClass().getDeclaredFields()).forEach(field -> {
 
-            if (!field.isAnnotationPresent(ConfigValue.class))
+            if (!field.isAnnotationPresent(ConfigValue.class)) {
                 return;
+            }
 
-            String path = field.getAnnotation(ConfigValue.class).value();
+            Object value = plugin.getConfig().get(field.getAnnotation(ConfigValue.class).value());
 
-            Object value = plugin.getConfig().get(path);
+            if (value == null) {
+                return;
+            }
 
-            if (value instanceof String)
+            if (value instanceof String) {
                 value = ChatColor.translateAlternateColorCodes('&', (String) value);
+            }
 
             try {
                 field.setAccessible(true);
@@ -79,8 +83,9 @@ public class ConfigManager {
     public ConfigManager save() {
         objects.forEach(object -> Arrays.stream(object.getClass().getDeclaredFields()).forEach(field -> {
 
-            if (!field.isAnnotationPresent(ConfigValue.class))
+            if (!field.isAnnotationPresent(ConfigValue.class)) {
                 return;
+            }
 
             try {
                 field.setAccessible(true);
@@ -94,6 +99,8 @@ public class ConfigManager {
     }
 
     /**
+     * Reloads the config.
+     *
      * @return instance of this class so you can build
      */
     public ConfigManager reload() {

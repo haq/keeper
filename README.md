@@ -1,10 +1,9 @@
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg) ](LICENSE)
 
 # ConfigManager
-A simple config manager for your Bukkit/Spigot plugins. You may want to make a default config for your plugin to start off.
+A simple config manager for your Spigot plugins. You may want to make a default config for your plugin to start off.
 
 ## Declaration
-
 ```java
 public class TestPlugin extends JavaPlugin {
 
@@ -29,7 +28,7 @@ public class TestPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         configManager
-            .register(this) // regestring objects that contain ConfigValue fields
+            .register(this) // registering objects that contain ConfigValue fields
             .load(); // loads all the values
     }
 
@@ -55,7 +54,7 @@ public class TestPlugin extends JavaPlugin {
 <dependency>
     <groupId>me.ihaq</groupId>
     <artifactId>config-manager</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 </dependency>
 ```
 
@@ -68,6 +67,6 @@ repositories {
 }
 
 dependencies {
-    compile 'me.ihaq:config-manager:1.2.1'
+    compile 'me.ihaq:config-manager:1.2.2'
 }
 ```
