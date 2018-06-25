@@ -48,7 +48,7 @@ public class TestPlugin extends JavaPlugin {
 <repository>
     <id>ihaq-me</id>
     <name>ihaq-maven</name>
-    <url>http://maven.ihaq.me</url>
+    <url>http://maven.ihaq.me/repo/</url>
 </repository>
 
 <dependency>
@@ -62,7 +62,7 @@ public class TestPlugin extends JavaPlugin {
 ```gradle
 repositories {
     maven {
-        url "http://maven.ihaq.me"
+        url "http://maven.ihaq.me/repo/"
     }
 }
 
