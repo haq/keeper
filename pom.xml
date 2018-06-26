@@ -23,7 +23,7 @@
     <distributionManagement>
         <repository>
             <id>ihaq-maven</id>
-            <url>http://maven.ihaq.me:8080/repository/public/</url>
+            <url>http://maven.ihaq.me/artifactory/libs-maven/</url>
         </repository>
     </distributionManagement>
 
