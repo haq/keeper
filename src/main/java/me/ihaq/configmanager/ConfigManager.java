@@ -89,7 +89,14 @@ public class ConfigManager {
 
             try {
                 field.setAccessible(true);
-                plugin.getConfig().set(field.getAnnotation(ConfigValue.class).value(), field.get(object));
+
+                Object value = field.get(object);
+
+                if (value instanceof String) {
+                    value = ((String) value).replaceAll("" + ChatColor.COLOR_CHAR, "&");
+                }
+
+                plugin.getConfig().set(field.getAnnotation(ConfigValue.class).value(), value);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
