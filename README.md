@@ -53,7 +53,7 @@ public class TestPlugin extends JavaPlugin {
 <dependency>
     <groupId>me.ihaq</groupId>
     <artifactId>config-manager</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
 </dependency>
 ```
 
@@ -66,6 +66,6 @@ repositories {
 }
 
 dependencies {
-    compile 'me.ihaq:config-manager:1.2.2'
+    compile 'me.ihaq:config-manager:1.2.3'
 }
 ```

@@ -95,6 +95,7 @@ public class ConfigManager {
             }
 
         }));
+        plugin.saveConfig();
         return this;
     }
 
