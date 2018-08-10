@@ -23,7 +23,7 @@ public class TestPlugin extends JavaPlugin {
     @ConfigValue("messages.quit")
     private String quitMessage;
 
-    private ConfigManager configManager = new ConfigManager(this); // send in JavaPlugin so it can get yor config
+    private ConfigManager configManager = new ConfigManager(this); // send in JavaPlugin so it can get your config
 
     @Override
     public void onEnable() {
