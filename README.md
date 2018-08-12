@@ -1,14 +1,14 @@
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg) ](LICENSE)
 
 # ConfigManager
-A simple config manager for your Spigot plugins. You may want to make a default config for your plugin to start off.
+A basic **config manager** for your Spigot plugins.
 
 ## Declaration
 ```java
 public class TestPlugin extends JavaPlugin {
 
     @ConfigValue("messages.join")
-    private String join;
+    private String join = "Default join message";
 
 }
 ```
@@ -18,23 +18,23 @@ public class TestPlugin extends JavaPlugin {
 public class TestPlugin extends JavaPlugin {
 
     @ConfigValue("messages.join")
-    private String joinMessage;
+    private String joinMessage = "Default join message";
 
     @ConfigValue("messages.quit")
-    private String quitMessage;
+    private String quitMessage = "Default quit message";
 
-    private ConfigManager configManager = new ConfigManager(this); // send in JavaPlugin so it can get your config
+    private ConfigManager configManager;
 
     @Override
     public void onEnable() {
-        configManager
-            .register(this) // registering objects that contain ConfigValue fields
-            .load(); // loads all the values
+        configManager = new ConfigManager(this)
+                            .register(this) // registering objects that contain ConfigValue fields
+                            .load();  // loads all the values
     }
 
     @Override
     public void onDisable() {
-        // saving the config values, if this is called before load it will save their set values
+        // saves the config values
         configManager.save();
     }
 
@@ -53,7 +53,7 @@ public class TestPlugin extends JavaPlugin {
 <dependency>
     <groupId>me.ihaq</groupId>
     <artifactId>config-manager</artifactId>
-    <version>1.2.3</version>
+    <version>1.3</version>
 </dependency>
 ```
 
@@ -66,6 +66,6 @@ repositories {
 }
 
 dependencies {
-    compile 'me.ihaq:config-manager:1.2.3'
+    compile 'me.ihaq:config-manager:1.3'
 }
 ```

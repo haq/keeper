@@ -13,6 +13,4 @@ public @interface ConfigValue {
      * @return the path of the value
      */
     String value();
-
-    String[] comments() default "";
 }

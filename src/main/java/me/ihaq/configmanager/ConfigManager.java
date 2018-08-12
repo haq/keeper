@@ -2,13 +2,8 @@ package me.ihaq.configmanager;
 
 import me.ihaq.configmanager.data.ConfigValue;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,9 +19,6 @@ public class ConfigManager {
     public ConfigManager(JavaPlugin plugin) {
         this.plugin = plugin;
         objects = new HashSet<>();
-
-        // copying their default config if they have one
-        plugin.saveDefaultConfig();
     }
 
     /**
@@ -37,6 +29,11 @@ public class ConfigManager {
      */
     public ConfigManager register(Object... objects) {
         this.objects.addAll(Arrays.asList(objects));
+
+        // adding the default config values and saving the config
+        Arrays.stream(objects).forEach(o -> save(o, false));
+        plugin.saveConfig();
+
         return this;
     }
 
@@ -83,30 +80,12 @@ public class ConfigManager {
     }
 
     /**
+     * Saves the config with updated values.
+     *
      * @return instance of this class so you can build
      */
     public ConfigManager save() {
-        objects.forEach(object -> Arrays.stream(object.getClass().getDeclaredFields()).forEach(field -> {
-
-            if (!field.isAnnotationPresent(ConfigValue.class)) {
-                return;
-            }
-
-            try {
-                field.setAccessible(true);
-
-                Object value = field.get(object);
-
-                if (value instanceof String) {
-                    value = ((String) value).replaceAll("" + ChatColor.COLOR_CHAR, "&");
-                }
-
-                plugin.getConfig().set(field.getAnnotation(ConfigValue.class).value(), value);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-
-        }));
+        objects.forEach(o -> save(o, true));
         plugin.saveConfig();
         return this;
     }
@@ -122,5 +101,32 @@ public class ConfigManager {
         return this;
     }
 
+    private void save(Object object, boolean override) {
+        Arrays.stream(object.getClass().getDeclaredFields()).forEach(field -> {
+
+            if (!field.isAnnotationPresent(ConfigValue.class)) {
+                return;
+            }
+
+            try {
+                field.setAccessible(true);
+
+                String path = field.getAnnotation(ConfigValue.class).value();
+                Object value = field.get(object);
+
+                if (value instanceof String) {
+                    value = ((String) value).replaceAll("" + ChatColor.COLOR_CHAR, "&");
+                }
+
+                if (override) {
+                    plugin.getConfig().set(path, value);
+                } else if (plugin.getConfig().get(path) == null) {
+                    plugin.getConfig().set(path, value);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
 }
