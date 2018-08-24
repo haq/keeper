@@ -1,24 +1,45 @@
-package me.ihaq.configmanager;
+package me.ihaq.keeper;
 
-import me.ihaq.configmanager.data.ConfigValue;
-import org.bukkit.ChatColor;
-import org.bukkit.plugin.java.JavaPlugin;
+import me.ihaq.keeper.data.ConfigValue;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ConfigManager {
+public class Keeper {
 
-    private JavaPlugin plugin;
+    private Plugin plugin;
     private Set<Object> objects;
+
+    private File configFile;
+    private ConfigurationProvider configProvider;
+    private Configuration config;
 
     /**
      * @param plugin instance of your plugin
      */
-    public ConfigManager(JavaPlugin plugin) {
+    public Keeper(Plugin plugin) {
         this.plugin = plugin;
         objects = new HashSet<>();
+
+        configFile = new File(plugin.getDataFolder(), "config.yml");
+        if (!configFile.exists()) {
+            try {
+                plugin.getDataFolder().mkdirs();
+                configFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        configProvider = ConfigurationProvider.getProvider(YamlConfiguration.class);
+        loadConfigFile();
     }
 
     /**
@@ -27,13 +48,12 @@ public class ConfigManager {
      * @param objects the objects you want to register
      * @return instance of this class so you can build
      */
-    public ConfigManager register(Object... objects) {
+    public Keeper register(Object... objects) {
         this.objects.addAll(Arrays.asList(objects));
 
         // adding the default config values and saving the config
         Arrays.stream(objects).forEach(o -> save(o, false));
-        plugin.saveConfig();
-
+        saveConfigFile();
         return this;
     }
 
@@ -43,7 +63,7 @@ public class ConfigManager {
      * @param objects the objects you want to remove from loading/saving
      * @return instance of this class so you can build
      */
-    public ConfigManager unregister(Object... objects) {
+    public Keeper unregister(Object... objects) {
         this.objects.removeAll(Arrays.asList(objects));
         return this;
     }
@@ -51,14 +71,14 @@ public class ConfigManager {
     /**
      * @return instance of this class so you can build
      */
-    public ConfigManager load() {
+    public Keeper load() {
         objects.forEach(object -> Arrays.stream(object.getClass().getDeclaredFields()).forEach(field -> {
 
             if (!field.isAnnotationPresent(ConfigValue.class)) {
                 return;
             }
 
-            Object value = plugin.getConfig().get(field.getAnnotation(ConfigValue.class).value());
+            Object value = config.get(field.getAnnotation(ConfigValue.class).value());
 
             if (value == null) {
                 return;
@@ -84,9 +104,9 @@ public class ConfigManager {
      *
      * @return instance of this class so you can build
      */
-    public ConfigManager save() {
+    public Keeper save() {
         objects.forEach(o -> save(o, true));
-        plugin.saveConfig();
+        saveConfigFile();
         return this;
     }
 
@@ -95,8 +115,9 @@ public class ConfigManager {
      *
      * @return instance of this class so you can build
      */
-    public ConfigManager reload() {
-        plugin.reloadConfig();
+    public Keeper reload() {
+        save();
+        loadConfigFile();
         load();
         return this;
     }
@@ -119,14 +140,30 @@ public class ConfigManager {
                 }
 
                 if (override) {
-                    plugin.getConfig().set(path, value);
-                } else if (plugin.getConfig().get(path) == null) {
-                    plugin.getConfig().set(path, value);
+                    config.set(path, value);
+                } else if (config.get(path) == null) {
+                    config.set(path, value);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         });
+    }
+
+    private void saveConfigFile() {
+        try {
+            configProvider.save(config, configFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadConfigFile() {
+        try {
+            config = configProvider.load(configFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
