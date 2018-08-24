@@ -1,6 +1,6 @@
-package me.ihaq.configmanager;
+package me.ihaq.keeper;
 
-import me.ihaq.configmanager.data.ConfigValue;
+import me.ihaq.keeper.data.ConfigValue;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ConfigManager {
+public class Keeper {
 
     private JavaPlugin plugin;
     private Set<Object> objects;
@@ -16,7 +16,7 @@ public class ConfigManager {
     /**
      * @param plugin instance of your plugin
      */
-    public ConfigManager(JavaPlugin plugin) {
+    public Keeper(JavaPlugin plugin) {
         this.plugin = plugin;
         objects = new HashSet<>();
     }
@@ -27,7 +27,7 @@ public class ConfigManager {
      * @param objects the objects you want to register
      * @return instance of this class so you can build
      */
-    public ConfigManager register(Object... objects) {
+    public Keeper register(Object... objects) {
         this.objects.addAll(Arrays.asList(objects));
 
         // adding the default config values and saving the config
@@ -43,7 +43,7 @@ public class ConfigManager {
      * @param objects the objects you want to remove from loading/saving
      * @return instance of this class so you can build
      */
-    public ConfigManager unregister(Object... objects) {
+    public Keeper unregister(Object... objects) {
         this.objects.removeAll(Arrays.asList(objects));
         return this;
     }
@@ -51,7 +51,7 @@ public class ConfigManager {
     /**
      * @return instance of this class so you can build
      */
-    public ConfigManager load() {
+    public Keeper load() {
         objects.forEach(object -> Arrays.stream(object.getClass().getDeclaredFields()).forEach(field -> {
 
             if (!field.isAnnotationPresent(ConfigValue.class)) {
@@ -84,7 +84,7 @@ public class ConfigManager {
      *
      * @return instance of this class so you can build
      */
-    public ConfigManager save() {
+    public Keeper save() {
         objects.forEach(o -> save(o, true));
         plugin.saveConfig();
         return this;
@@ -95,7 +95,7 @@ public class ConfigManager {
      *
      * @return instance of this class so you can build
      */
-    public ConfigManager reload() {
+    public Keeper reload() {
         save();
         plugin.reloadConfig();
         load();

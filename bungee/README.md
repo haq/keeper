@@ -1,6 +1,6 @@
 ## Declaration
 ```java
-public class TestPlugin extends JavaPlugin {
+public class TestPlugin extends Plugin {
 
     @ConfigValue("messages.join")
     private String join = "Default join message";
@@ -10,7 +10,7 @@ public class TestPlugin extends JavaPlugin {
 
 ## Usage
 ```java
-public class TestPlugin extends JavaPlugin {
+public class TestPlugin extends Plugin {
 
     @ConfigValue("messages.join")
     private String joinMessage = "Default join message";
@@ -39,7 +39,7 @@ public class TestPlugin extends JavaPlugin {
 
 <dependency>
     <groupId>me.ihaq.keeper</groupId>
-    <artifactId>spigot</artifactId>
+    <artifactId>bungee</artifactId>
     <version>1.0</version>
 </dependency>
 ```
@@ -53,6 +53,6 @@ repositories {
 }
 
 dependencies {
-    compile 'me.ihaq.keeper:spigot:1.0'
+    compile 'me.ihaq.keeper:bungee:1.0'
 }
 ```

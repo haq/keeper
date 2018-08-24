@@ -1,4 +1,4 @@
-package me.ihaq.configmanager.data;
+package me.ihaq.keeper.data;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,6 +1,6 @@
-package me.ihaq.configmanager;
+package me.ihaq.keeper;
 
-import me.ihaq.configmanager.data.ConfigValue;
+import me.ihaq.keeper.data.ConfigValue;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ConfigManager {
+public class Keeper {
 
     private Plugin plugin;
     private Set<Object> objects;
@@ -25,13 +25,14 @@ public class ConfigManager {
     /**
      * @param plugin instance of your plugin
      */
-    public ConfigManager(Plugin plugin) {
+    public Keeper(Plugin plugin) {
         this.plugin = plugin;
         objects = new HashSet<>();
 
         configFile = new File(plugin.getDataFolder(), "config.yml");
         if (!configFile.exists()) {
             try {
+                plugin.getDataFolder().mkdirs();
                 configFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -47,7 +48,7 @@ public class ConfigManager {
      * @param objects the objects you want to register
      * @return instance of this class so you can build
      */
-    public ConfigManager register(Object... objects) {
+    public Keeper register(Object... objects) {
         this.objects.addAll(Arrays.asList(objects));
 
         // adding the default config values and saving the config
@@ -62,7 +63,7 @@ public class ConfigManager {
      * @param objects the objects you want to remove from loading/saving
      * @return instance of this class so you can build
      */
-    public ConfigManager unregister(Object... objects) {
+    public Keeper unregister(Object... objects) {
         this.objects.removeAll(Arrays.asList(objects));
         return this;
     }
@@ -70,7 +71,7 @@ public class ConfigManager {
     /**
      * @return instance of this class so you can build
      */
-    public ConfigManager load() {
+    public Keeper load() {
         objects.forEach(object -> Arrays.stream(object.getClass().getDeclaredFields()).forEach(field -> {
 
             if (!field.isAnnotationPresent(ConfigValue.class)) {
@@ -103,7 +104,7 @@ public class ConfigManager {
      *
      * @return instance of this class so you can build
      */
-    public ConfigManager save() {
+    public Keeper save() {
         objects.forEach(o -> save(o, true));
         saveConfigFile();
         return this;
@@ -114,7 +115,7 @@ public class ConfigManager {
      *
      * @return instance of this class so you can build
      */
-    public ConfigManager reload() {
+    public Keeper reload() {
         save();
         loadConfigFile();
         load();
