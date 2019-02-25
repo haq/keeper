@@ -29,30 +29,16 @@ public class TestPlugin extends JavaPlugin {
 ```
 
 ## Download
-
-#### Maven
 ```xml
 <repository>
-    <id>ihaq-maven</id>
-    <url>http://maven.ihaq.me/libs-maven/</url>
+   <id>maven-public</id>
+   <url>http://nexus.ihaq.me/repository/maven-public/</url>
 </repository>
-
+```
+```xml
 <dependency>
     <groupId>me.ihaq.keeper</groupId>
     <artifactId>spigot</artifactId>
     <version>1.0</version>
 </dependency>
-```
-
-#### Gradle
-```gradle
-repositories {
-    maven {
-        url "http://maven.ihaq.me/libs-maven/"
-    }
-}
-
-dependencies {
-    compile 'me.ihaq.keeper:spigot:1.0'
-}
 ```
