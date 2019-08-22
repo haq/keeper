@@ -27,18 +27,3 @@ public class TestPlugin extends JavaPlugin {
     
 }
 ```
-
-## Download
-```xml
-<repository>
-   <id>maven-public</id>
-   <url>http://nexus.ihaq.me/repository/maven-public/</url>
-</repository>
-```
-```xml
-<dependency>
-    <groupId>me.ihaq.keeper</groupId>
-    <artifactId>spigot</artifactId>
-    <version>1.0</version>
-</dependency>
-```
