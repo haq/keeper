@@ -8,22 +8,26 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 
-class ConfigFilee {
+class ConfigurationFile {
 
     private final File file;
     private final FileConfiguration configuration;
 
-    public ConfigFilee(JavaPlugin plugin, String name) {
+    public ConfigurationFile(JavaPlugin plugin, String name) {
+        configuration = new YamlConfiguration();
         file = new File(plugin.getDataFolder(), name);
 
         // creating the config file
         if (!file.exists()) {
-            file.getParentFile().mkdirs();
-            plugin.saveResource(name, false);
-        }
+            System.out.println("Making file " + name);
 
-        configuration = new YamlConfiguration();
-        load();
+            file.getParentFile().mkdirs();
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void load() {

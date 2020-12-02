@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class Keeper {
 
-    private static final Map<Object, ConfigFilee> OBJECTS = new HashMap<>();
+    private static final Map<Object, ConfigurationFile> OBJECTS = new HashMap<>();
     private final JavaPlugin plugin;
 
     /**
@@ -34,28 +34,17 @@ public class Keeper {
                 .filter(obj -> obj.getClass().isAnnotationPresent(ConfigFile.class))
                 .forEach(obj -> OBJECTS.put(
                         obj,
-                        new ConfigFilee(
+                        new ConfigurationFile(
                                 plugin,
                                 obj.getClass().getAnnotation(ConfigFile.class).value()
                         )
                 ));
 
         // adding the default config values and saving the config
-        Arrays.stream(objects).forEach(o -> save(o, false));
+        OBJECTS.forEach((k, v) -> save(k, v, false));
 
         return this;
     }
-
-    /**
-     * The objects you no longer want to have their config fields loaded/saved.
-     *
-     * @param objects the objects you want to remove from loading/saving
-     * @return instance of this class so you can build
-     */
-  /*  public Keeper unregister(Object... objects) {
-        this.objects.removeAll(Arrays.asList(objects));
-        return this;
-    }*/
 
     /**
      * @return instance of this class so you can build
@@ -95,7 +84,7 @@ public class Keeper {
      * @return instance of this class so you can build
      */
     public Keeper save() {
-        OBJECTS.entrySet().forEach(o -> save(o, true));
+        OBJECTS.forEach((k, v) -> save(k, v, true));
         return this;
     }
 
@@ -104,18 +93,17 @@ public class Keeper {
      *
      * @return instance of this class so you can build
      */
-   /* public Keeper reload() {
+    public Keeper reload() {
         save();
-        plugin.reloadConfig();
         load();
         return this;
-    }*/
+    }
 
     /**
      * Save a config file.
      */
-    private static void save(@NotNull Object object, boolean override) {
-        ConfigFilee file = OBJECTS.get(object);
+    private static void save(@NotNull Object object, ConfigurationFile file, boolean override) {
+        file.load();
 
         Arrays.stream(object.getClass().getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(ConfigValue.class))
@@ -131,8 +119,10 @@ public class Keeper {
                         }
 
                         if (override || file.getConfiguration().get(path) == null) {
+                            System.out.println("Setting " + path + " to " + value.toString());
                             file.getConfiguration().set(path, value);
                         }
+
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
