@@ -1,7 +1,7 @@
-package me.ihaq.keeper;
+package me.affanhaq.keeper;
 
-import me.ihaq.keeper.data.ConfigFile;
-import me.ihaq.keeper.data.ConfigValue;
+import me.affanhaq.keeper.data.ConfigFile;
+import me.affanhaq.keeper.data.ConfigValue;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +18,7 @@ public class Keeper {
     /**
      * @param plugin instance of your plugin
      */
-    public Keeper(JavaPlugin plugin) {
+    public Keeper(@NotNull JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -28,14 +28,14 @@ public class Keeper {
      * @param objects the objects you want to register
      * @return instance of this class so you can build
      */
-    public Keeper register(Object... objects) {
+    public Keeper register(@NotNull Object... objects) {
 
         Arrays.stream(objects)
                 .filter(obj -> obj.getClass().isAnnotationPresent(ConfigFile.class))
                 .forEach(obj -> OBJECTS.put(
                         obj,
                         new ConfigurationFile(
-                                plugin,
+                                plugin.getDataFolder(),
                                 obj.getClass().getAnnotation(ConfigFile.class).value()
                         )
                 ));
@@ -47,39 +47,46 @@ public class Keeper {
     }
 
     /**
+     * Loads the updated values from the config files.
+     *
      * @return instance of this class so you can build
      */
     public Keeper load() {
-        OBJECTS.forEach((object, v) ->
-                Arrays.stream(object.getClass().getDeclaredFields())
-                        .filter(field -> field.isAnnotationPresent(ConfigValue.class))
-                        .forEach(field -> {
+        OBJECTS.entrySet().forEach(this::load);
+        return this;
+    }
 
-                            Object value = v.getConfiguration().get(
-                                    field.getAnnotation(ConfigValue.class).value()
-                            );
+    public Keeper load(@NotNull Object object) {
+        ConfigurationFile file = OBJECTS.get(object);
+        Arrays.stream(object.getClass().getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(ConfigValue.class))
+                .forEach(field -> {
 
-                            if (value == null) {
-                                return;
-                            }
+                    Object value = file.getConfiguration().get(
+                            field.getAnnotation(ConfigValue.class).value()
+                    );
 
-                            if (value instanceof String) {
-                                value = ChatColor.translateAlternateColorCodes('&', (String) value);
-                            }
+                    if (value == null) {
+                        return;
+                    }
 
-                            try {
-                                field.setAccessible(true);
-                                field.set(object, value);
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            }
+                    if (value instanceof String) {
+                        value = ChatColor.translateAlternateColorCodes('&', value.toString());
+                    }
 
-                        }));
+                    try {
+                        field.setAccessible(true);
+                        field.set(object, value);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+
+                });
         return this;
     }
 
     /**
-     * Saves the config with updated values.
+     * Saves the config files with the updated values.
      *
      * @return instance of this class so you can build
      */
@@ -88,14 +95,8 @@ public class Keeper {
         return this;
     }
 
-    /**
-     * Reloads the config.
-     *
-     * @return instance of this class so you can build
-     */
-    public Keeper reload() {
-        save();
-        load();
+    public Keeper save(Object object) {
+        save(object, OBJECTS.get(object), true);
         return this;
     }
 

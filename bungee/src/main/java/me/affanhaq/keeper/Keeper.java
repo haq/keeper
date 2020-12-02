@@ -1,6 +1,6 @@
-package me.ihaq.keeper;
+package me.affanhaq.keeper;
 
-import me.ihaq.keeper.data.ConfigValue;
+import me.affanhaq.keeper.data.ConfigValue;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;

@@ -1,4 +1,4 @@
-package me.ihaq.keeper.data;
+package me.affanhaq.keeper.data;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

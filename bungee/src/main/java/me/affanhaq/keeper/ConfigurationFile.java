@@ -1,9 +1,9 @@
-package me.ihaq.keeper;
+package me.affanhaq.keeper;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,9 +13,9 @@ class ConfigurationFile {
     private final File file;
     private final FileConfiguration configuration;
 
-    public ConfigurationFile(JavaPlugin plugin, String name) {
+    public ConfigurationFile(@NotNull File dataFolder, @NotNull String name) {
         configuration = new YamlConfiguration();
-        file = new File(plugin.getDataFolder(), name);
+        file = new File(dataFolder, name);
 
         // creating the config file
         if (!file.exists()) {
