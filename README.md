@@ -1,4 +1,5 @@
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg) ](LICENSE)
+[![jitpack](https://jitpack.io/v/haq/keeper.svg)](https://jitpack.io/#haq/keeper)
 
 # keeper
 A basic **config manager** for your Spigot/Bungee plugins.
@@ -19,6 +20,6 @@ A basic **config manager** for your Spigot/Bungee plugins.
 <dependency> 
     <groupId>com.github.haq.keeper</groupId> 
     <artifactId>spigot or bungee</artifactId> 
-    <version>master-SNAPSHOT</version> 
+    <version>VERSION_NUMBER</version> 
 </dependency>
 ```
