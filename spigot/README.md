@@ -1,7 +1,18 @@
 ## Declaration
+
 ```java
+import me.affanhaq.keeper.data.ConfigFile;
+import me.affanhaq.keeper.data.ConfigValue;
+
+/**
+ * Every object that contains fields that you want to be load must be annotated.
+ */
+@ConfigFile("config.yml")
 public class TestPlugin extends JavaPlugin {
 
+    /**
+     * Every field that you want to load must be annotated.
+     */
     @ConfigValue("messages.join")
     private String join = "Default join message";
 
@@ -9,7 +20,13 @@ public class TestPlugin extends JavaPlugin {
 ```
 
 ## Usage
+
 ```java
+import me.affanhaq.keeper.Keeper;
+import me.affanhaq.keeper.data.ConfigFile;
+import me.affanhaq.keeper.data.ConfigValue;
+
+@ConfigFile("config.yml")
 public class TestPlugin extends JavaPlugin {
 
     @ConfigValue("messages.join")
@@ -24,6 +41,6 @@ public class TestPlugin extends JavaPlugin {
                 .register(this) // registering objects that contain ConfigValue fields
                 .load();  // loads all the values
     }
-    
+
 }
 ```

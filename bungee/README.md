@@ -1,7 +1,18 @@
 ## Declaration
+
 ```java
+import me.affanhaq.keeper.data.ConfigFile;
+import me.affanhaq.keeper.data.ConfigValue;
+
+/**
+ * Every object that contains fields that you want to be load must be annotated.
+ */
+@ConfigFile("config.yml")
 public class TestPlugin extends Plugin {
 
+    /**
+     * Every field that you want to load must be annotated.
+     */
     @ConfigValue("messages.join")
     private String join = "Default join message";
 
@@ -9,7 +20,14 @@ public class TestPlugin extends Plugin {
 ```
 
 ## Usage
+
 ```java
+import me.affanhaq.keeper.Keeper;
+import me.affanhaq.keeper.data.ConfigFile;
+import me.affanhaq.keeper.data.ConfigValue;
+import net.md_5.bungee.api.plugin.Plugin;
+
+@ConfigFile("config.yml")
 public class TestPlugin extends Plugin {
 
     @ConfigValue("messages.join")
@@ -24,6 +42,5 @@ public class TestPlugin extends Plugin {
                 .register(this) // registering objects that contain ConfigValue fields
                 .load();  // loads all the values
     }
-    
 }
 ```

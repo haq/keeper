@@ -1,4 +1,4 @@
-package me.ihaq.keeper.data;
+package me.affanhaq.keeper.data;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,11 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface ConfigValue {
+@Target(ElementType.TYPE)
+public @interface ConfigFile {
 
     /**
-     * @return the path of the value
+     * @return the name of the config file. ex: config.yml
      */
     String value();
 }
