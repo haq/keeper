@@ -1,45 +1,25 @@
 package me.affanhaq.keeper;
 
+import me.affanhaq.keeper.data.ConfigFile;
 import me.affanhaq.keeper.data.ConfigValue;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.config.Configuration;
-import net.md_5.bungee.config.ConfigurationProvider;
-import net.md_5.bungee.config.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Keeper {
 
-    private Plugin plugin;
-    private Set<Object> objects;
-
-    private File configFile;
-    private ConfigurationProvider configProvider;
-    private Configuration config;
+    private static final Map<Object, ConfigurationFile> OBJECTS = new HashMap<>();
+    private final Plugin plugin;
 
     /**
      * @param plugin instance of your plugin
      */
     public Keeper(Plugin plugin) {
         this.plugin = plugin;
-        objects = new HashSet<>();
-
-        configFile = new File(plugin.getDataFolder(), "config.yml");
-        if (!configFile.exists()) {
-            try {
-                plugin.getDataFolder().mkdirs();
-                configFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        configProvider = ConfigurationProvider.getProvider(YamlConfiguration.class);
-        loadConfigFile();
     }
 
     /**
@@ -48,111 +28,107 @@ public class Keeper {
      * @param objects the objects you want to register
      * @return instance of this class so you can build
      */
-    public Keeper register(Object... objects) {
-        this.objects.addAll(Arrays.asList(objects));
+    public Keeper register(@NotNull Object... objects) {
+
+        Arrays.stream(objects)
+                .filter(obj -> obj.getClass().isAnnotationPresent(ConfigFile.class))
+                .forEach(obj -> OBJECTS.put(
+                        obj,
+                        new ConfigurationFile(
+                                plugin.getDataFolder(),
+                                obj.getClass().getAnnotation(ConfigFile.class).value()
+                        )
+                ));
 
         // adding the default config values and saving the config
-        Arrays.stream(objects).forEach(o -> save(o, false));
-        saveConfigFile();
+        OBJECTS.forEach((k, v) -> save(k, v, false));
+
         return this;
     }
 
     /**
+     * Loads the updated values from the config files.
+     *
      * @return instance of this class so you can build
      */
     public Keeper load() {
-        objects.forEach(object -> Arrays.stream(object.getClass().getDeclaredFields()).forEach(field -> {
+        OBJECTS.entrySet().forEach(this::load);
+        return this;
+    }
 
-            if (!field.isAnnotationPresent(ConfigValue.class)) {
-                return;
-            }
+    public Keeper load(@NotNull Object object) {
+        ConfigurationFile file = OBJECTS.get(object);
+        Arrays.stream(object.getClass().getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(ConfigValue.class))
+                .forEach(field -> {
 
-            Object value = config.get(field.getAnnotation(ConfigValue.class).value());
+                    Object value = file.getConfiguration().get(
+                            field.getAnnotation(ConfigValue.class).value()
+                    );
 
-            if (value == null) {
-                return;
-            }
+                    if (value == null) {
+                        return;
+                    }
 
-            if (value instanceof String) {
-                value = ChatColor.translateAlternateColorCodes('&', (String) value);
-            }
+                    if (value instanceof String) {
+                        value = ChatColor.translateAlternateColorCodes('&', value.toString());
+                    }
 
-            try {
-                field.setAccessible(true);
-                field.set(object, value);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+                    try {
+                        field.setAccessible(true);
+                        field.set(object, value);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
 
-        }));
+                });
         return this;
     }
 
     /**
-     * Saves the config with updated values.
+     * Saves the config files with the updated values.
      *
      * @return instance of this class so you can build
      */
     public Keeper save() {
-        objects.forEach(o -> save(o, true));
-        saveConfigFile();
+        OBJECTS.forEach((k, v) -> save(k, v, true));
+        return this;
+    }
+
+    public Keeper save(Object object) {
+        save(object, OBJECTS.get(object), true);
         return this;
     }
 
     /**
-     * Reloads the config.
-     *
-     * @return instance of this class so you can build
+     * Save a config file.
      */
-    public Keeper reload() {
-        save();
-        loadConfigFile();
-        load();
-        return this;
-    }
+    private static void save(@NotNull Object object, ConfigurationFile file, boolean override) {
+        file.load();
 
-    private void save(Object object, boolean override) {
-        Arrays.stream(object.getClass().getDeclaredFields()).forEach(field -> {
+        Arrays.stream(object.getClass().getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(ConfigValue.class))
+                .forEach(field -> {
+                    try {
+                        field.setAccessible(true);
 
-            if (!field.isAnnotationPresent(ConfigValue.class)) {
-                return;
-            }
+                        String path = field.getAnnotation(ConfigValue.class).value();
+                        Object value = field.get(object);
 
-            try {
-                field.setAccessible(true);
+                        if (value instanceof String) {
+                            value = ((String) value).replaceAll("" + ChatColor.COLOR_CHAR, "&");
+                        }
 
-                String path = field.getAnnotation(ConfigValue.class).value();
-                Object value = field.get(object);
+                        if (override || file.getConfiguration().get(path) == null) {
+                            file.getConfiguration().set(path, value);
+                        }
 
-                if (value instanceof String) {
-                    value = ((String) value).replaceAll("" + ChatColor.COLOR_CHAR, "&");
-                }
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                });
 
-                if (override) {
-                    config.set(path, value);
-                } else if (config.get(path) == null) {
-                    config.set(path, value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    private void saveConfigFile() {
-        try {
-            configProvider.save(config, configFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadConfigFile() {
-        try {
-            config = configProvider.load(configFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        file.save();
     }
 
 }
