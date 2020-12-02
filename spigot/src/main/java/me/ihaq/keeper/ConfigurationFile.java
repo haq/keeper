@@ -19,8 +19,6 @@ class ConfigurationFile {
 
         // creating the config file
         if (!file.exists()) {
-            System.out.println("Making file " + name);
-
             file.getParentFile().mkdirs();
             try {
                 file.createNewFile();

@@ -119,7 +119,6 @@ public class Keeper {
                         }
 
                         if (override || file.getConfiguration().get(path) == null) {
-                            System.out.println("Setting " + path + " to " + value.toString());
                             file.getConfiguration().set(path, value);
                         }
 
