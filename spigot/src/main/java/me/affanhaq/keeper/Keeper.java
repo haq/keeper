@@ -52,36 +52,31 @@ public class Keeper {
      * @return instance of this class so you can build
      */
     public Keeper load() {
-        OBJECTS.entrySet().forEach(this::load);
-        return this;
-    }
+        OBJECTS.forEach((object, configFile) ->
+                Arrays.stream(object.getClass().getDeclaredFields())
+                        .filter(field -> field.isAnnotationPresent(ConfigValue.class))
+                        .forEach(field -> {
 
-    public Keeper load(@NotNull Object object) {
-        ConfigurationFile file = OBJECTS.get(object);
-        Arrays.stream(object.getClass().getDeclaredFields())
-                .filter(field -> field.isAnnotationPresent(ConfigValue.class))
-                .forEach(field -> {
+                            Object value = configFile.getConfiguration().get(
+                                    field.getAnnotation(ConfigValue.class).value()
+                            );
 
-                    Object value = file.getConfiguration().get(
-                            field.getAnnotation(ConfigValue.class).value()
-                    );
+                            if (value == null) {
+                                return;
+                            }
 
-                    if (value == null) {
-                        return;
-                    }
+                            if (value instanceof String) {
+                                value = ChatColor.translateAlternateColorCodes('&', value.toString());
+                            }
 
-                    if (value instanceof String) {
-                        value = ChatColor.translateAlternateColorCodes('&', value.toString());
-                    }
+                            try {
+                                field.setAccessible(true);
+                                field.set(object, value);
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                            }
 
-                    try {
-                        field.setAccessible(true);
-                        field.set(object, value);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-
-                });
+                        }));
         return this;
     }
 
