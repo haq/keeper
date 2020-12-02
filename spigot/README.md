@@ -10,6 +10,7 @@ public class TestPlugin extends JavaPlugin {
 
 ## Usage
 ```java
+@ConfigFile("test.yml")
 public class TestPlugin extends JavaPlugin {
 
     @ConfigValue("messages.join")

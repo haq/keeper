@@ -1,24 +1,25 @@
 package me.ihaq.keeper;
 
+import me.ihaq.keeper.data.ConfigFile;
 import me.ihaq.keeper.data.ConfigValue;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Keeper {
 
-    private JavaPlugin plugin;
-    private Set<Object> objects;
+    private static final Map<Object, ConfigFilee> OBJECTS = new HashMap<>();
+    private final JavaPlugin plugin;
 
     /**
      * @param plugin instance of your plugin
      */
     public Keeper(JavaPlugin plugin) {
         this.plugin = plugin;
-        objects = new HashSet<>();
     }
 
     /**
@@ -28,11 +29,19 @@ public class Keeper {
      * @return instance of this class so you can build
      */
     public Keeper register(Object... objects) {
-        this.objects.addAll(Arrays.asList(objects));
+
+        Arrays.stream(objects)
+                .filter(obj -> obj.getClass().isAnnotationPresent(ConfigFile.class))
+                .forEach(obj -> OBJECTS.put(
+                        obj,
+                        new ConfigFilee(
+                                plugin,
+                                obj.getClass().getAnnotation(ConfigFile.class).value()
+                        )
+                ));
 
         // adding the default config values and saving the config
         Arrays.stream(objects).forEach(o -> save(o, false));
-        plugin.saveConfig();
 
         return this;
     }
@@ -43,39 +52,40 @@ public class Keeper {
      * @param objects the objects you want to remove from loading/saving
      * @return instance of this class so you can build
      */
-    public Keeper unregister(Object... objects) {
+  /*  public Keeper unregister(Object... objects) {
         this.objects.removeAll(Arrays.asList(objects));
         return this;
-    }
+    }*/
 
     /**
      * @return instance of this class so you can build
      */
     public Keeper load() {
-        objects.forEach(object -> Arrays.stream(object.getClass().getDeclaredFields()).forEach(field -> {
+        OBJECTS.forEach((object, v) ->
+                Arrays.stream(object.getClass().getDeclaredFields())
+                        .filter(field -> field.isAnnotationPresent(ConfigValue.class))
+                        .forEach(field -> {
 
-            if (!field.isAnnotationPresent(ConfigValue.class)) {
-                return;
-            }
+                            Object value = v.getConfiguration().get(
+                                    field.getAnnotation(ConfigValue.class).value()
+                            );
 
-            Object value = plugin.getConfig().get(field.getAnnotation(ConfigValue.class).value());
+                            if (value == null) {
+                                return;
+                            }
 
-            if (value == null) {
-                return;
-            }
+                            if (value instanceof String) {
+                                value = ChatColor.translateAlternateColorCodes('&', (String) value);
+                            }
 
-            if (value instanceof String) {
-                value = ChatColor.translateAlternateColorCodes('&', (String) value);
-            }
+                            try {
+                                field.setAccessible(true);
+                                field.set(object, value);
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                            }
 
-            try {
-                field.setAccessible(true);
-                field.set(object, value);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-
-        }));
+                        }));
         return this;
     }
 
@@ -85,8 +95,7 @@ public class Keeper {
      * @return instance of this class so you can build
      */
     public Keeper save() {
-        objects.forEach(o -> save(o, true));
-        plugin.saveConfig();
+        OBJECTS.entrySet().forEach(o -> save(o, true));
         return this;
     }
 
@@ -95,39 +104,41 @@ public class Keeper {
      *
      * @return instance of this class so you can build
      */
-    public Keeper reload() {
+   /* public Keeper reload() {
         save();
         plugin.reloadConfig();
         load();
         return this;
-    }
+    }*/
 
-    private void save(Object object, boolean override) {
-        Arrays.stream(object.getClass().getDeclaredFields()).forEach(field -> {
+    /**
+     * Save a config file.
+     */
+    private static void save(@NotNull Object object, boolean override) {
+        ConfigFilee file = OBJECTS.get(object);
 
-            if (!field.isAnnotationPresent(ConfigValue.class)) {
-                return;
-            }
+        Arrays.stream(object.getClass().getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(ConfigValue.class))
+                .forEach(field -> {
+                    try {
+                        field.setAccessible(true);
 
-            try {
-                field.setAccessible(true);
+                        String path = field.getAnnotation(ConfigValue.class).value();
+                        Object value = field.get(object);
 
-                String path = field.getAnnotation(ConfigValue.class).value();
-                Object value = field.get(object);
+                        if (value instanceof String) {
+                            value = ((String) value).replaceAll("" + ChatColor.COLOR_CHAR, "&");
+                        }
 
-                if (value instanceof String) {
-                    value = ((String) value).replaceAll("" + ChatColor.COLOR_CHAR, "&");
-                }
+                        if (override || file.getConfiguration().get(path) == null) {
+                            file.getConfiguration().set(path, value);
+                        }
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                });
 
-                if (override) {
-                    plugin.getConfig().set(path, value);
-                } else if (plugin.getConfig().get(path) == null) {
-                    plugin.getConfig().set(path, value);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        });
+        file.save();
     }
 
 }
