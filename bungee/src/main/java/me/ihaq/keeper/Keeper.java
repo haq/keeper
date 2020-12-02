@@ -58,17 +58,6 @@ public class Keeper {
     }
 
     /**
-     * The objects you no longer want to have their config fields loaded/saved.
-     *
-     * @param objects the objects you want to remove from loading/saving
-     * @return instance of this class so you can build
-     */
-    public Keeper unregister(Object... objects) {
-        this.objects.removeAll(Arrays.asList(objects));
-        return this;
-    }
-
-    /**
      * @return instance of this class so you can build
      */
     public Keeper load() {
