@@ -1,8 +1,10 @@
-## Declaration
+## Usage
 
 ```java
+import me.affanhaq.keeper.Keeper;
 import me.affanhaq.keeper.data.ConfigFile;
 import me.affanhaq.keeper.data.ConfigValue;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * Every object that contains fields that you want to be load must be annotated.
@@ -13,22 +15,6 @@ public class TestPlugin extends JavaPlugin {
     /**
      * Every field that you want to load must be annotated.
      */
-    @ConfigValue("messages.join")
-    private String join = "Default join message";
-
-}
-```
-
-## Usage
-
-```java
-import me.affanhaq.keeper.Keeper;
-import me.affanhaq.keeper.data.ConfigFile;
-import me.affanhaq.keeper.data.ConfigValue;
-
-@ConfigFile("config.yml")
-public class TestPlugin extends JavaPlugin {
-
     @ConfigValue("messages.join")
     private String joinMessage = "Default join message";
 
