@@ -1,9 +1,10 @@
 ## Usage
 
 ```java
-import me.affanhaq.keeper.Keeper;
-import me.affanhaq.keeper.data.ConfigFile;
-import me.affanhaq.keeper.data.ConfigValue;
+import dev.affan.keeper.Keeper;
+import dev.affan.keeper.ConfigFile;
+import dev.affan.keeper.ConfigValue;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -27,6 +28,5 @@ public class TestPlugin extends JavaPlugin {
                 .register(this) // registering objects that contain ConfigValue fields
                 .load();  // loads all the values
     }
-
 }
 ```

@@ -1,7 +1,7 @@
-package me.affanhaq.keeper;
+package dev.affan.keeper;
 
-import me.affanhaq.keeper.data.ConfigFile;
-import me.affanhaq.keeper.data.ConfigValue;
+import dev.affan.keeper.data.ConfigFile;
+import dev.affan.keeper.data.ConfigValue;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;

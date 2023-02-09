@@ -4,9 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>keeper-parent</artifactId>
-        <groupId>me.affanhaq.keeper</groupId>
-        <version>2.0</version>
+        <groupId>dev.affan.keeper</groupId>
+        <version>2.1</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>spigot</artifactId>
@@ -22,7 +23,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.17.1-R0.1-SNAPSHOT</version>
+            <version>1.19.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

@@ -1,7 +1,7 @@
-package me.affanhaq.keeper;
+package dev.affan.keeper;
 
-import me.affanhaq.keeper.data.ConfigFile;
-import me.affanhaq.keeper.data.ConfigValue;
+import dev.affan.keeper.data.ConfigFile;
+import dev.affan.keeper.data.ConfigValue;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
