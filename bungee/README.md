@@ -1,9 +1,10 @@
 ## Usage
 
 ```java
-import me.affanhaq.keeper.Keeper;
-import me.affanhaq.keeper.data.ConfigFile;
-import me.affanhaq.keeper.data.ConfigValue;
+import dev.affan.keeper.Keeper;
+import dev.affan.keeper.ConfigFile;
+import dev.affan.keeper.ConfigValue;
+
 import net.md_5.bungee.api.plugin.Plugin;
 
 /**

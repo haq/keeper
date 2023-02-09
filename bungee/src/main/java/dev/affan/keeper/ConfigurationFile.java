@@ -1,8 +1,8 @@
-package me.affanhaq.keeper;
+package dev.affan.keeper;
 
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -11,10 +11,11 @@ import java.io.IOException;
 class ConfigurationFile {
 
     private final File file;
-    private final FileConfiguration configuration;
+    private Configuration configuration;
+    private final ConfigurationProvider configurationProvider;
 
     public ConfigurationFile(@NotNull File dataFolder, @NotNull String name) {
-        configuration = new YamlConfiguration();
+        configurationProvider = ConfigurationProvider.getProvider(YamlConfiguration.class);
         file = new File(dataFolder, name);
 
         // creating the config file
@@ -30,21 +31,21 @@ class ConfigurationFile {
 
     public void load() {
         try {
-            configuration.load(file);
-        } catch (IOException | InvalidConfigurationException e) {
+            configuration = configurationProvider.load(file);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void save() {
         try {
-            configuration.save(file);
+            configurationProvider.save(configuration, file);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public FileConfiguration getConfiguration() {
+    public Configuration getConfiguration() {
         return configuration;
     }
 }
