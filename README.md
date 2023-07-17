@@ -2,14 +2,16 @@
 [![jitpack](https://jitpack.io/v/haq/keeper.svg)](https://jitpack.io/#haq/keeper)
 
 # keeper
-A basic **config manager** for your Spigot/Bungee plugins.
+
+Config manager for your Spigot/Bungee plugins.
 
 ## Usage
 
-#### [Spigot](/spigot)
-#### [Bungee](/bungee)
+- [Spigot](/spigot)
+- [Bungee](/bungee)
 
 ## Download
+
 ```xml
 <repository>
     <id>jitpack.io</id>
