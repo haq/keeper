@@ -1,5 +1,5 @@
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg) ](LICENSE)
-[![jitpack](https://jitpack.io/v/haq/keeper.svg)](https://jitpack.io/#haq/keeper)
+![jitpack](https://jitpack.io/v/haq/keeper.svg)
+![github code size in bytes](https://img.shields.io/github/languages/code-size/haq/keeper)
 
 # keeper
 
